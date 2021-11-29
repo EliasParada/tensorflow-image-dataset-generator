@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @font-face{
+            font-family: Flow;
+            font-weight: 900;
+            font-style: normal;
+            src: url(flow-circular.853ff76f08786ae44ca0f167cac8bbe5.woff) format('woff');
+        }
+        .bg-stripes-white {
+            --stripes-color: hsla(0,0%,100%,0.4);
+        }
+        .bg-stripes {
+            background-image: linear-gradient(45deg,var(--stripes-color) 12.5%,transparent 12.5%,transparent 50%,var(--stripes-color) 50%,var(--stripes-color) 62.5%,transparent 62.5%,transparent 100%);
+            background-size: 6px 6px;
+        }
+        .font-flow {
+            font-family: Flow;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-stripes-white bg-stripes">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <!-- <img src="" alt="Flow" class="w-12"> -->
+                    <h1 class="ml-4 text-2xl font-bold">
+                        <span class="">Dataset generator</span>
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <h2 class="text-2xl font-bold">
+                        <span class="">Generate dataset</span>
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <img hidden src="https://i.imgur.com/qZQZQZQ.png" alt="Dataset" id="imgData" width="100" height="100">
+                    <canvas id="canvas" width="100" height="100" class="border-2 border-blue-500"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 py-8">
+            <form action="" method="" id="frmData">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" id="btnAdd">
+                            Add a new tag
+                        </button>
+                    </div>
+                    <div class="flex items-center">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" id="btnGenerate">
+                            Generate dataset
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-6" id="tag1">
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_tag1">
+                            Tag
+                        </label>
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_tag1" type="text" name="tag" placeholder="Tag" required>
+                    </div>
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_size1">
+                            Size
+                        </label>
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_size1" type="number" name="size" placeholder="Size" required>
+                    </div>
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onclick="deleteTag(0)">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.0-rc.3/jquery-ui.js" integrity="sha256-tYLuvehjddL4JcVWw1wRMB0oPSz7fKEpdZrIWf3rWNA=" crossorigin="anonymous"></script>
+    <script>
+        let tag = 1,
+            dataset = [];
+        tag++;
+        function deleteTag(id) {
+            $('#tag' + id).remove();
+            tag--;
+        }
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        $(document).ready(function() {
+            imgSet = $('#imgData')[0];
+
+            function showImg(url){
+                var canvas = document.getElementById('canvas');
+                var ctx = canvas.getContext('2d');
+                var img = new Image();
+                img.src = `${url}`;
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                }
+                // Conseguir los pixeles de la imagen
+                var imageData = ctx.getImageData(0, 0, 100, 100);
+                var data = imageData.data;
+                console.log(imageData);
+                // Recorrer los pixeles
+                for (var i = 0; i < data.length; i += 4) {
+                    // Cambiar el color de los pixeles
+                    data[i] = data[i];
+                    data[i + 1] = data[i + 1];
+                    data[i + 2] = data[i + 2];
+                }
+                console.log(data);
+
+            }
+            $('#frmData').submit(async function(e) {
+                e.preventDefault();
+                for (i = 1; i < tag; i++) {
+                    tagName = $(`#data_tag${i}`).val();
+                    tagSize = $(`#data_size${i}`).val();
+                    
+                    for (j = 1; j < parseInt(tagSize)+1; j++) {
+                        showImg(`images/${tagName}/${tagName} (${j}).jpg`);
+                        await sleep(3000);
+                    }
+                }
+            });
+
+            $('#btnAdd').click(function(e) {
+                e.preventDefault();
+                $('#frmData').append(`
+                    <div class="flex flex-wrap -mx-3 mb-6" id="tag${tag}">
+                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_tag${tag}">
+                                Tag
+                            </label>
+                            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_tag${tag}" type="text" name="tag" placeholder="Tag" required>
+                        </div>
+                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_size${tag}">
+                                Size
+                            </label>
+                            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_size${tag}" type="number" name="size" placeholder="Size" required>
+                        </div>
+                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onclick="deleteTag(${tag})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `);
+                tag++;
+            });
+        });
+    </script>
+</body>
+</html>

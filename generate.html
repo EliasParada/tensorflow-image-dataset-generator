@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Dataset</title>
+</head>
+<body>
+    <h1>Generate Dataset</h1>
+    <form>
+        <button type="button" id="add_tag">Add Tag</button>
+        <button type="button" id="remove_tag">Remove Tag</button>
+        <label for="height">Height:</label>
+        <input type="text" id="height" name="height" value="48">
+        <label for="width">Width:</label>
+        <input type="text" id="width" name="width" value="48">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="dataset">
+
+        <div id="tags">
+            <label for="tag0">Tag 0:</label>
+            <input type="text" id="tag0" name="tag0" value="tag0">
+            <label for="tag_count0">Tag Count:</label>
+            <input type="text" id="tag_count0" name="tag_count0" value="10">
+        </div>
+        <button type="button" id="generate">Generate</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.0-rc.3/jquery-ui.js" integrity="sha256-tYLuvehjddL4JcVWw1wRMB0oPSz7fKEpdZrIWf3rWNA=" crossorigin="anonymous"></script>
+    <script>
+        var tag_count = 0;
+
+        function addTag() {
+            tag_count++;
+            var tag = document.createElement('div');
+            tag.innerHTML = '<label for="tag' + tag_count + '">Tag ' + tag_count + ':</label>' +
+                '<input type="text" id="tag' + tag_count + '" name="tag' + tag_count + '" value="tag' + tag_count + '">' +
+                '<label for="tag_count' + tag_count + '">Tag Count:</label>' +
+                '<input type="text" id="tag_count' + tag_count + '" name="tag_count' + tag_count + '" value="10">';
+            document.getElementById('tags').appendChild(tag);
+            console.log('Added tag, Now tag count is ' + tag_count);
+        }
+
+        function removeTag() {
+            if (tag_count > 0) {
+                document.getElementById('tags').removeChild(document.getElementById('tags').lastChild);
+                tag_count--;
+                console.log('Removed tag, Now tag count is ' + tag_count);
+            }
+        }
+
+        document.getElementById('add_tag').addEventListener('click', addTag);
+        document.getElementById('remove_tag').addEventListener('click', removeTag);
+        document.getElementById('generate').addEventListener('click', function() {
+            var height = document.getElementById('height').value;
+            var width = document.getElementById('width').value;
+            var name = document.getElementById('name').value;
+            var tags = [];
+            for (var i = 0; i < tag_count + 1; i++) {
+                console.log(document.getElementById('tag' + i).value);
+                tags.push({
+                    'id': i,
+                    'tag': document.getElementById('tag' + i).value,
+                    'count': document.getElementById('tag_count' + i).value
+                });
+            }
+            console.log(height, width, name, tags);
+            var data = {
+                height: height,
+                width: width,
+                name: name,
+                dataset: tags
+            };
+            console.log(data);
+
+            $.post('/resize_save', JSON.stringify(data), function(response) {
+                console.log(response);
+            });
+        });
+    </script>
+</body>
+</html>

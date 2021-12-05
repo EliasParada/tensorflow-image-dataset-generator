@@ -13,6 +13,9 @@
             font-style: normal;
             src: url(flow-circular.853ff76f08786ae44ca0f167cac8bbe5.woff) format('woff');
         }
+        .font-flow {
+            font-family: Flow;
+        }
         .bg-stripes-white {
             --stripes-color: hsla(0,0%,100%,0.4);
         }
@@ -20,72 +23,72 @@
             background-image: linear-gradient(45deg,var(--stripes-color) 12.5%,transparent 12.5%,transparent 50%,var(--stripes-color) 50%,var(--stripes-color) 62.5%,transparent 62.5%,transparent 100%);
             background-size: 6px 6px;
         }
-        .font-flow {
-            font-family: Flow;
+        .bg-emerald-500 {
+            background-color: #10B981;
+        }
+        .bg-teal-50 {
+            background-color: #F0FDFA;
+        }
+        .bg-emerald-200 {
+            background-color: #A7F3D0;
+        }
+        .text-teal-500 {
+            color: #10B981;
+        }
+        .text-teal-100 {
+            color: #CCFBF1;
         }
     </style>
 </head>
-<body>
-    <div class="bg-stripes-white bg-stripes">
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <!-- <img src="" alt="Flow" class="w-12"> -->
-                    <h1 class="ml-4 text-2xl font-bold">
-                        <span class="">Dataset generator</span>
-                    </h1>
-                </div>
-            </div>
+<body class="bg-emerald-200 bg-stripes-white bg-stripes">
+    <div class="container mx-auto relative">
+        <div class="text-center mx-auto container bg-emerald-200 rounded-lg border-4 p-4 border-green-700 box-border text-center my-2">
+            <span class="text-3xl font-bold font-flow text-teal-500">xxx xx x    x xx xxx</span>
+            <h1 class="text-3xl font-bold text-teal-500">Generate Dataset</h1>
+            <span class="text-3xl font-bold font-flow text-teal-500">xxx xx x    x xx xxx</span>
         </div>
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <h2 class="text-2xl font-bold">
-                        <span class="">Generate dataset</span>
-                    </h2>
-                </div>
+        <div class="text-center mx-auto container bg-emerald-500 rounded-lg border-4 p-4 border-green-700 box-border text-center">
+            <div class="text-2xl font-flow flex">
+                <span class="text-green-600 flex-grow">-</span>
+                <span class="text-green-600 flex-grow">-</span>
+                <span class="text-green-600 flex-grow">-</span>
+                <span class="text-green-600 flex-grow">-</span>
             </div>
-        </div>
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <canvas id="canvas" width="28" height="28" class="border-2 border-blue-500"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto px-4 py-8">
-            <form action="" method="" id="frmData">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-4" type="button" id="btnAdd">
-                            Add a new tag
+            <form class="mt-4 space-y-6" id="frmGenerate">
+                <div class="flex flex-col items-center">
+                    <div class="flex space-x-4 items-center mt-4">
+                        <button type="button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg flex-grow" id="add">
+                            +
                         </button>
-                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onclick="deleteTag()">
-                            Delete
+                        <button type="button" class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg flex-grow" id="del">
+                            -
                         </button>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="text" name="name" id="name" class="border-2 border-blue-500 p-2 w-full" placeholder="Name" required>
-                    </div>
-                    <div class="flex items-center">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" id="btnGenerate">
-                            Generate dataset
+
+                        <input type="number" id="width" class="border-2 border-green-700 p-2 w-16 rounded-lg" placeholder="28" required>
+                        <p class="text-white font-bold">X</p>
+                        <input type="number" id="height" class="border-2 border-green-700 p-2 w-16 rounded-lg" placeholder="28" required>
+
+                        <input type="text" id="name" class="border-2 border-green-700 p-2 w-40 rounded-lg" placeholder="dataset">
+
+                        <button type="submit" class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-lg flex-grow" id="generate">
+                            Create Dataset
                         </button>
                     </div>
                 </div>
-                <div class="flex flex-wrap -mx-3 mb-6" id="tag1">
-                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_tag1">
-                            Tag
-                        </label>
-                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_tag1" type="text" name="tag" placeholder="Tag" required>
+
+                <div class="space-y-4 items-center" id="tags">
+                    <div class="flex-grow">
+                        <label for="tag0" class="text-white font-bold">Tag</label>
+                        <input type="text" id="tag0" name="tag0" class="border-2 border-green-700 p-2 w-56 rounded-lg" placeholder="tag name" required>
+
+                        <label for="tag_count0" class="text-white font-bold">Size</label>
+                        <input type="number" id="tag_count0" name="tag_count0" class="border-2 border-green-700 p-2 w-56 rounded-lg" placeholder="tag size" required>
                     </div>
-                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_size1">
-                            Size
-                        </label>
-                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_size1" type="number" name="size" placeholder="Size" required>
-                    </div>
+                </div>
+
+                <!-- Sección para la alerta -->
+                <div class="flex flex-col items-center" id="alert">
+                    <span class="text-white font-bold"></span>
                 </div>
             </form>
         </div>
@@ -94,102 +97,68 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.0-rc.3/jquery-ui.js" integrity="sha256-tYLuvehjddL4JcVWw1wRMB0oPSz7fKEpdZrIWf3rWNA=" crossorigin="anonymous"></script>
     <script>
-        let tag = 1;
-        function deleteTag() {
-            if (tag > 1) {
-                $('#tag' + tag).remove();
-                tag--;
-            }
-            console.log(tag);
+        var tag_count = 0;
+
+        function addTag() {
+            tag_count++;
+            var tag = document.createElement('div');
+            tag.innerHTML = `
+                <label for="tag${tag_count}" class="text-white font-bold">Tag</label>
+                <input type="text" id="tag${tag_count}" name="tag${tag_count}" class="border-2 border-green-700 p-2 w-56 rounded-lg" placeholder="tag name" required>
+
+                <label for="tag_count${tag_count}" class="text-white font-bold">Size</label>
+                <input type="number" id="tag_count${tag_count}" name="tag_count${tag_count}" class="border-2 border-green-700 p-2 w-56 rounded-lg" placeholder="tag size" required>
+            `;
+            $('#tags')[0].appendChild(tag);
+            console.log('Added tag, Now tag count is ' + tag_count);
         }
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
+
+        function removeTag() {
+            if (tag_count > 0) {
+                $('#tags')[0].removeChild($('#tags')[0].lastChild);
+                tag_count--;
+                console.log('Removed tag, Now tag count is ' + tag_count);
+            }
         }
-        $(document).ready(function() {
-            var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext('2d');
 
-            $('#name').keyup(e => {
-                name = $('#name');
-                if ($('#name').val().length > 0) {
-                }
-            });
-
-            function showImg(url){
-                var img = new Image();
-                img.src = url;
-                img.onload = function() {
-                    console.log('imagen a canvas');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                }
-            }
-            function pick(event){
-                var x = event.layerX;
-                var y = event.layerY;
-                var pixel = ctx.getImageData(x, y, 1, 1);
-                var data = pixel.data;
-                var color = 'COLOR('+(data[2]/255*100/100).toFixed(2)+')';
-                console.log(color);
-            }
-
-            canvas.addEventListener('mousemove', pick);
-            $('#frmData').submit(async function(e) {
-                e.preventDefault();
-                dataset = [];
-                name = $('#name').val();
-                for (i = 1; i < tag+1; i++) {
-                    tagName = $(`#data_tag${i}`).val();
-                    tagSize = $(`#data_size${i}`).val();
-                    
-                    for (j = 1; j < parseInt(tagSize)+1; j++) {
-                        await showImg(`../images/${tagName}/${tagName} (${j}).jpg`);
-                        await sleep(500);
-                        let pixelesarr = [];
-                        let pixelesstring = '';
-                        pixelesarr.push(i-1);
-                        // console.log(ctx.getImageData(0, 0, 100, 100));
-                        for(x=0; x<canvas.width;x++){
-                            for(y=0; y<canvas.height; y++){
-                                let imgData = ctx.getImageData(y,x,1,1),
-                                    pixels = imgData.data;
-                                    valor = (pixels[2]/255*100/100).toFixed(2);
-                                pixelesarr.push(valor);
-                            }
-                            pixelesstring = pixelesarr.join(',');
-                        }
-                        await $.post("http://localhost:8000/add",pixelesstring,respuesta=>{
-                            console.log(respuesta);
-                        });
-                        await sleep(500);
-                    }
-                }
-                await sleep(500);
-                await $.post("http://localhost:8000/generate", name, respuesta=>{
-                    console.log(respuesta);
+        $('#add').click(function() {
+            addTag();
+        });
+        $('#del').click(function() {
+            removeTag();
+        });
+        $('#frmGenerate').submit(function(e) {
+            e.preventDefault();
+            var height = $('#height')[0].value;
+            var width = $('#width')[0].value;
+            var name = $('#name')[0].value;
+            var tags = [];
+            for (var i = 0; i < tag_count + 1; i++) {
+                tags.push({
+                    'id': i,
+                    'tag': $('#tag' + i)[0].value,
+                    'count': $('#tag_count' + i)[0].value
                 });
-            });
+            }
+            console.log(height, width, name, tags);
+            var data = {
+                height: height,
+                width: width,
+                name: name,
+                dataset: tags
+            };
+            console.log(data);
 
-            $('#btnAdd').click(function(e) {
-                e.preventDefault();
-                tag++;
-                $('#frmData').append(`
-                    <div class="flex flex-wrap -mx-3 mb-6" id="tag${tag}">
-                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_tag${tag}">
-                                Tag
-                            </label>
-                            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_tag${tag}" type="text" name="tag" placeholder="Tag" required>
-                        </div>
-                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="data_size${tag}">
-                                Size
-                            </label>
-                            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="data_size${tag}" type="number" name="size" placeholder="Size" required>
-                        </div>
-                    </div>
-                `);
-                console.log(tag);
-            });
+            $.post('/generate', JSON.stringify(data), function(resp) {
+                resp = resp.msg;
+
+                console.log(resp);
+
+                $('#alert')[0].innerHTML = `
+                    <span class="text-white font-bold">${resp[0]}</span>
+                    <a href="${resp[1]}" class="text-white font-bold">${resp[1]}</a>
+                `;
+            }, 'json');
         });
     </script>
 </body>

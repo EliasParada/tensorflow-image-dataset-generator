@@ -1,0 +1,5 @@
+0=apples
+1=shampoes
+2=cookies
+3=sapolios
+4=atunas

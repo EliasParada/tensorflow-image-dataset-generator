@@ -1,43 +1,64 @@
 import pandas as pd
 import numpy as np
-import os
+import json
 import cv2
-import PIL
+from PIL import Image
 from urllib import parse
 import matplotlib.pyplot as plt
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 class data_setting:
-    def __init__(self):
-        self.dataset = []
+    def generate_data(self, data):
+        height = int(data['height'])
+        width = int(data['width'])
+        name = data['name']
 
-    def add_data(self, data):
-        self.dataset.append(data)
-        return "Datos agregados"
+        data_frame = []
+        header = []
+        lables = []
+        header.append('labels')
+        for i in range(height * width):
+            header.append(f'pixel{i}')
 
-    def generate_data(self, name):
-        datasetcsv = pd.DataFrame(self.dataset)
-        print(datasetcsv)
-        # Eliminar el archivo csv si existe
-        if f'{name}.csv' in os.listdir():
-            os.remove(f'{name}.csv')
-        # Convertir el dataframe a un archivo csv
-        datasetcsv.to_csv(f'{name}.csv', index=False)
+        header = ','.join(header)
+        data_frame.append(header)
 
-        return "Archivo csv generado"
+        print(height, width, name)
+        for i in range(len(data['dataset'])):
+            nametag = data['dataset'][i]['tag']
+            idtag = str(data['dataset'][i]['id'])
 
-    def reset_data(self):
-        self.dataset = []
-        return "Datos reiniciados"
+            lables.append(idtag + '=' + nametag)
+            for j in range(int(data['dataset'][i]['count'])):
+                url = 'images/'+str(nametag)+'/'+str(nametag)+' ('+str(j+1)+').jpg'
+                img = cv2.imread(url)
+                img = cv2.resize(img, (width, height), interpolation=cv2.INTER_CUBIC)
+
+                array_img = Image.fromarray(img)
+                array_img = cv2.cvtColor(np.array(array_img), cv2.COLOR_BGR2RGB)
+
+                array_img = array_img.flatten().tolist()
+                array_img = ','.join(str(x) for x in array_img)
+
+                print(nametag, 'IMG', j)
+
+                data_frame.append(idtag + ',' + array_img)
+
+        data_frame = np.array(data_frame)
+        data_frame = pd.DataFrame(data_frame)
+        data_frame.to_csv(f'{name}.csv', sep=';', index=False, header=False)
+        with open(f'{name}_labels.txt', 'w') as f:
+            for item in lables:
+                f.write("%s\n" % item)
+
+        return "Archivo csv generado", f'{name}.csv'
+
+dataSetting = data_setting()
 
 class servidor(SimpleHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/':
-            self.path = '/index.html'
-            return SimpleHTTPRequestHandler.do_GET(self)
-        else:
-            return SimpleHTTPRequestHandler.do_GET(self)
+        return SimpleHTTPRequestHandler.do_GET(self)
 
     def do_POST(self):
         self.dataset = []
@@ -45,53 +66,15 @@ class servidor(SimpleHTTPRequestHandler):
         data = self.rfile.read(content_length)
         data = data.decode()
         data = parse.unquote(data)
+        data = json.loads(data)
 
-        if self.path == '/refresh':
-            self.dataset = []
-
-        if self.path == '/add':
-            print('Etiqueta:',data[0])
-            self.dataset.append(data)
-            print(len(self.dataset))
-
-            # matriz = np.fromstring(data, np.float32, sep=',')
-            # matriz = matriz.reshape(100,100)
-            # matriz = np.array(matriz)
-            # matriz = matriz.reshape(1,100,100,1)
-            # print(matriz.shape)
-
-            mensaje = "Imagen recibida"
-
-        elif self.path == '/generate':
-            # Primero imprimir el tamaño del dataset
-            print(data)
-            # Convertir el array a un dataframe con el siguiente formato [[0], [1], [2], [3], [4]]
-            # df = pd.DataFrame(data)
-            # Convertir el dataframe a un array
-            # df = df.values
-            # Convertir el array a una matriz
-            # df = df.reshape(len(df), 1)
-            # # Convertir el array a una imagen
-            # img = cv2.imdecode(df, cv2.IMREAD_COLOR)
-            # # Convertir la imagen a una matriz
-            # img = np.array(img)
-            # # Convertir la matriz a un array
-            # img = img.reshape(1, 100, 100, 3)
-            # print(self.dataset[0])
-            datasetcsv = pd.DataFrame(self.dataset)
-            print(datasetcsv)
-            # Eliminar el archivo csv si existe
-            if f'{data}.csv' in os.listdir():
-                os.remove(f'{data}.csv')
-            # Convertir el dataframe a un archivo csv
-            datasetcsv.to_csv(f'{data}.csv', index=False)
-
-            mensaje = "Archivo csv generado"
-
+        if self.path == '/generate':
+            msg = dataSetting.generate_data(data)
+            
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin","*")
         self.end_headers()
-        self.wfile.write(mensaje.encode())
+        self.wfile.write(json.dumps(dict(msg=msg)).encode())
 
 
 
